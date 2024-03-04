@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { FaCartPlus } from 'react-icons/fa'; // Import the add icon
+import { FaCartPlus } from 'react-icons/fa';
 
 const CategoryPage = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const category = searchParams.get('category');
-    const decodedCategory = decodeURIComponent(category); // Decode the category name
+    const decodedCategory = decodeURIComponent(category);
 
     const categoryData = {
         "mobiles": [
@@ -17,7 +17,8 @@ const CategoryPage = () => {
                 "description": "A powerful smartphone with the latest features.",
                 "image": "https://via.placeholder.com/150",
                 "price": 999.99,
-                "rating": 4.5
+                "rating": 4.5,
+                "color": "black"
             },
             {
                 "id": 2,
@@ -26,7 +27,8 @@ const CategoryPage = () => {
                 "description": "A sleek and stylish smartphone with advanced technology.",
                 "image": "https://via.placeholder.com/150",
                 "price": 899.99,
-                "rating": 4.3
+                "rating": 4.3,
+                "color": "white"
             }
         ],
         "laptops": [
@@ -37,7 +39,8 @@ const CategoryPage = () => {
                 "description": "A high-performance laptop with a stunning display.",
                 "image": "https://via.placeholder.com/150",
                 "price": 1499.99,
-                "rating": 4.8
+                "rating": 4.8,
+                "color": "silver"
             },
             {
                 "id": 4,
@@ -46,7 +49,8 @@ const CategoryPage = () => {
                 "description": "An ultra-portable laptop with exceptional build quality.",
                 "image": "https://via.placeholder.com/150",
                 "price": 1299.99,
-                "rating": 4.6
+                "rating": 4.6,
+                "color": "black"
             }
         ],
         "tvs": [
@@ -57,7 +61,8 @@ const CategoryPage = () => {
                 "description": "A premium 4K QLED TV with vibrant colors and impressive contrast.",
                 "image": "https://via.placeholder.com/150",
                 "price": 1999.99,
-                "rating": 4.7
+                "rating": 4.7,
+                "color": "black"
             },
             {
                 "id": 6,
@@ -66,61 +71,65 @@ const CategoryPage = () => {
                 "description": "An OLED TV with perfect blacks and infinite contrast.",
                 "image": "https://via.placeholder.com/150",
                 "price": 2499.99,
-                "rating": 4.9
+                "rating": 4.9,
+                "color": "silver"
             }
         ]
     };
-    
 
-    // Get category data based on the decoded category parameter
     const currentCategoryData = categoryData[decodedCategory];
-
-    // Filter state
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     const [brandFilter, setBrandFilter] = useState([]);
+    const [colorFilter, setColorFilter] = useState([]);
 
-    // Extract unique brands
     const brands = Array.from(new Set(currentCategoryData.map(item => item.brand)));
+    const colors = Array.from(new Set(currentCategoryData.map(item => item.color)));
 
-    // Filter function
     const filteredData = currentCategoryData.filter(item => {
-        // Apply price filter
         const meetsMinPrice = minPrice === '' || item.price >= parseFloat(minPrice);
         const meetsMaxPrice = maxPrice === '' || item.price <= parseFloat(maxPrice);
-        // Apply brand filter
         const meetsBrandFilter = brandFilter.length === 0 || brandFilter.includes(item.brand.toLowerCase());
-        return meetsMinPrice && meetsMaxPrice && meetsBrandFilter;
+        const meetsColorFilter = colorFilter.length === 0 || colorFilter.includes(item.color.toLowerCase());
+        return meetsMinPrice && meetsMaxPrice && meetsBrandFilter && meetsColorFilter;
     });
 
     const clearFilters = () => {
         setMinPrice('');
         setMaxPrice('');
         setBrandFilter([]);
+        setColorFilter([]);
     };
 
     return (
         <div className="flex">
-            {/* Filters on the left side */}
             <div className="w-1/4 p-4">
-                {/* Brand filter */}
+                {/* Filters */}
                 <h2 className="text-lg font-bold mb-4">Brands</h2>
                 <select
                     multiple
                     value={brandFilter}
                     onChange={(e) => setBrandFilter(Array.from(e.target.selectedOptions, option => option.value.toLowerCase()))}
-                    className="block w-full border rounded p-2"
+                    className="block w-full border rounded p-2 mb-4"
                 >
                     {brands.map((brand, index) => (
                         <option key={index} value={brand.toLowerCase()}>{brand}</option>
                     ))}
                 </select>
-                {brandFilter.length > 0 && (
-                    <button onClick={clearFilters} className="bg-blue-500 text-white font-semibold py-2 px-4 rounded mt-2">Clear All</button>
-                )}
 
-                {/* Price filters */}
-                <div className="mt-8">
+                <h2 className="text-lg font-bold mb-4">Colors</h2>
+                <select
+                    multiple
+                    value={colorFilter}
+                    onChange={(e) => setColorFilter(Array.from(e.target.selectedOptions, option => option.value.toLowerCase()))}
+                    className="block w-full border rounded p-2 mb-4"
+                >
+                    {colors.map((color, index) => (
+                        <option key={index} value={color.toLowerCase()}>{color}</option>
+                    ))}
+                </select>
+
+                <div>
                     <h2 className="text-lg font-bold mb-4">Price Range</h2>
                     <input
                         type="text"
@@ -137,21 +146,23 @@ const CategoryPage = () => {
                         className="mb-2 p-2 block w-full border rounded"
                     />
                 </div>
+
+                {brandFilter.length > 0 || colorFilter.length > 0 || minPrice || maxPrice ? (
+                    <button onClick={clearFilters} className="bg-blue-500 text-white font-semibold py-2 px-4 rounded mt-2">Clear All</button>
+                ) : null}
             </div>
 
-            {/* Display filtered items */}
             <div className="w-3/4 p-4">
                 {/* Display filtered items */}
                 <div className="flex flex-wrap justify-center gap-4">
                     {filteredData?.map((item, index) => (
-                        <div key={index} className="max-w-xs rounded overflow-hidden shadow-lg transition duration-300 hover:shadow-2xl">
+                        <div key={index} className="max-w-xs rounded overflow-hidden shadow-lg transition duration-300 hover:shadow-2xl cursor-pointer">
                             <img className="w-full" src={item.image} alt={item.name} />
                             <div className="px-6 py-4">
                                 <p className="font-semibold text-lg mb-2">{item.brand}</p>
                                 <p className="font-bold text-xl mb-2">{item.name}</p>
                                 <p className="text-gray-700 text-base">{item.description}</p>
                                 <p className="text-gray-900 font-bold text-xl mt-2">${item.price.toFixed(2)}</p>
-                                {/* Rating could be displayed here */}
                             </div>
                             <div className="px-6 pt-4 pb-2">
                                 <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">
