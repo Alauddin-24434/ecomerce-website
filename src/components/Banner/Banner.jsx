@@ -21,10 +21,10 @@ const Banner = () => {
     };
 
     return (
-        <div className="bg-gray-200 py-4">
+        <div className="border py-4">
             <div className="container mx-auto">
-                <div className="grid grid-cols-12">
-                    <div className="col-span-3 border-r">
+                <div className="grid grid-cols-12 gap-4">
+                    <div className="col-span-3 border">
                         <ul className="space-y-2">
                             {categories.map((category, index) => (
                                 <li key={index}>
@@ -43,7 +43,7 @@ const Banner = () => {
                             ))}
                         </ul>
                     </div>
-                    <div className="col-span-9">
+                    <div className="col-span-9 border">
                         {/* You can replace this with your banner content */}
                         <div className="text-center">
                             <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to our E-commerce Store!</h1>
