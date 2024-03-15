@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 
 const Banner = () => {
     const categories = [
-        "Mobiles",
+        "Mobile",
         "Laptops",
         "Desktops",
+        "Headphone",
         "Tablets",
         "Monitors",
         "TVs",

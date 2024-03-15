@@ -2,6 +2,7 @@ import  { useState } from 'react';
 import app from '../../../firebase/Firebase.config';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const storage = getStorage(app);
 
@@ -127,10 +128,32 @@ const AddProduct = () => {
         setImages(updatedImages);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(brand)
-        // Handle form submission
+    
+        const productData = {
+            category: category,
+            brand: brand,
+            title: title,
+            images: images,
+            colors: colors, // Assuming colors is another state variable
+            price: price,
+            discount: discount,
+            description: description,
+            percent: percent,
+            rating: [],
+        };
+    
+        try {
+            const response = await axios.post('http://localhost:5000/createProduct', productData);
+            console.log('Response:', response.data);
+            // Handle success, show message or navigate to another page
+            toast.success('Product added successfully!');
+        } catch (error) {
+            console.error('Error adding product:', error);
+            // Handle error, show error message to the user
+            toast.error('Error adding product');
+        }
     };
 
     return (
