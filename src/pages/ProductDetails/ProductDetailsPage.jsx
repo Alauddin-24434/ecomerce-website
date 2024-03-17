@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 
 import { useLoaderData, useNavigate, } from 'react-router-dom';
-import Comments from '../../components/shared/Comments/Comments';
+
 import ProductDetailsSection from './ProductDetailsSection/ProductDetailsSection';
 
 const ProductDetailsPage = () => {
 
     const loadProperty = useLoaderData();
-    const { title, _id, brand, images, price,colors } = loadProperty || {};
+    const { title, _id, brand, images, price, colors } = loadProperty || {};
 
     const navigate = useNavigate()
     const [selectedTab, setSelectedTab] = useState('customerFeedback');
@@ -38,25 +38,21 @@ const ProductDetailsPage = () => {
 
 
 
+            Description details will go here.
 
-
-            <Comments productId={_id} />
 
         </div>;
     } else if (selectedTab === 'description') {
         middleSectionContent = <div>Description details will go here.</div>;
     }
 
-    // const handleBuy = (id, count,colors) => {
-    //     console.log(id, count,colors);
-    //     navigate(`/purchase/${id}?count=${count}?colors=${colors}`);
-    // };
+
 
     const handleBuy = (id, count, colors) => {
         console.log(id, count, colors);
         navigate(`/purchase/${id}?count=${count}&colors=${colors}`);
     };
-    
+
 
 
     return (

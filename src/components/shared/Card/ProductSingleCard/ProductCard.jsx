@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
+
 
 const ProductCard = ({ item }) => {
     // Generate random rating for demonstration purposes

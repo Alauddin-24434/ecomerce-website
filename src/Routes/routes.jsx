@@ -18,6 +18,7 @@ import Success from "../components/Payment/Success/Success";
 import Fail from "../components/Payment/Fail/Fail";
 import Signup from "../pages/Signup/Signup";
 import Login from "../pages/Login/Login";
+import Privateroutes from "./Privateroutes";
 
 
 const Routes = createBrowserRouter([
@@ -35,12 +36,12 @@ const Routes = createBrowserRouter([
             },
             {
                 path: '/details/:id',
-                element: <ProductDetailsPage />,
+                element: <Privateroutes><ProductDetailsPage /></Privateroutes> ,
                 loader: ({ params }) => fetch(`http://localhost:5000/api/product/${[params.id]}`)
             },
             {
                 path: "/purchase/:id",
-                element: <PurchasePage />,
+                element:<PurchasePage /> ,
                 loader: ({ params }) => fetch(`http://localhost:5000/api/buy/${params.id}?count=${params.count}&colors=${params.colors}`)
             }
             
@@ -58,20 +59,20 @@ const Routes = createBrowserRouter([
                 element: <CartPage />
             },
           
-         
+            {
+                path: "/signUp",
+                element: <Signup />
+            },
+            {
+                path: "/login",
+                element: <Login />
+            },
 
         ],
         
 
     },
-    {
-        path: "/signUp",
-        element: <Signup />
-    },
-    {
-        path: "/login",
-        element: <Login />
-    },
+
     {
         path: "/dashboard",
         element: <Dashboardlayout />,

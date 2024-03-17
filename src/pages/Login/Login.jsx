@@ -1,16 +1,20 @@
-import  { useState } from 'react';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
 import './Login.css'; // Import CSS file for additional styling
-import axios from 'axios';
+
+import { AuthContext } from '../../Provider/AuthProvider';
+import useUser from '../../hooks/useUser';
 
 const Login = () => {
-    // State variables to store form data and error message
+    const { login, error } = useContext(AuthContext);
+    const { refetch } = useUser();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
-    const [error, setError] = useState('');
 
-    // Event handler to update form data
+    const navigate = useNavigate();
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -19,47 +23,17 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-
-        try {
-            const response = await axios.post('http://localhost:5000/api/login', {
-                email: formData.email,
-                password: formData.password
-            });
-
-            // Check the status code of the response
-            if (response.status === 200) {
-                // Login successful
-                const { token } = response.data;
-                localStorage.setItem('token', token); // Save token in localStorage
-                setError(''); // Clear any previous error
-                // Redirect or perform other actions for successful login
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            // Handle any errors, such as displaying an error message to the user
-            if (error.response && error.response.data && error.response.data.message) {
-                // If there is an error message from the server, display it
-                setError(error.response.data.message);
-            } else if (error.response && error.response.status === 400) {
-                // Handle specific status code errors
-                setError('Invalid email or password');
-            } else {
-                // If there is no specific error message, set a generic error
-                setError('Login failed');
-            }
-        }
+        const email = formData.email;
+        const password = formData.password;
+        await login(email, password);
+        refetch();
+        const isLocation = localStorage.getItem("prevLocation");
+        navigate(isLocation || '/', { replace: true });
+        localStorage.removeItem("prevLocation");
     };
 
-    // Event handler to handle logout
-    const handleLogout = () => {
-        // Remove the token from localStorage
-        localStorage.removeItem('token');
-        // Perform any additional logout actions, such as redirecting to the login page
-    };
-
-    // Render the login form
     return (
         <div className="login-container">
             <div className="login-content">
@@ -68,7 +42,7 @@ const Login = () => {
                 </div>
                 <div className="login-form">
                     <h2>Login</h2>
-                    <form className="login-form-fields" onSubmit={handleSubmit}>
+                    <form className="login-form-fields" onSubmit={handleLogin}>
                         <div className="form-group">
                             <label htmlFor="email">Email Address</label>
                             <input
@@ -93,12 +67,11 @@ const Login = () => {
                                 onChange={handleInputChange}
                             />
                         </div>
-                        {/* Display error message */}
                         {error && <p className="error-message ">{error}</p>}
                         <button type="submit" className="login-button">Login</button>
                     </form>
-                    {/* Render the logout button */}
-                    <button onClick={handleLogout} className="logout-button">Logout</button>
+                    {/* Add a link to the signup page */}
+                    <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
                 </div>
             </div>
         </div>
