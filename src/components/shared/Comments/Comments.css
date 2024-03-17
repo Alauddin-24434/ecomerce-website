@@ -1,0 +1,48 @@
+/* Comments.css */
+.comments-container {
+    margin: 20px;
+}
+
+.comment-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comment-item {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.reply-form {
+    margin-top: 10px;
+}
+
+.reply-list {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.reply-item {
+    margin-bottom: 10px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.username {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin-right: 5px;
+}

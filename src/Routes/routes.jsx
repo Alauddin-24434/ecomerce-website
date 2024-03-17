@@ -12,6 +12,12 @@ import Dashboardlayout from "../components/layout/Dashboardlayout";
 import Dashboard from "../components/DashboardRelated/Dashboard/Dashboard";
 import AddProduct from "../components/DashboardRelated/AddProduct/AddProduct";
 import ProductList from "../components/DashboardRelated/ProductList/ProductList";
+import PurchasePage from "../pages/Purchase/PurchasePage";
+
+import Success from "../components/Payment/Success/Success";
+import Fail from "../components/Payment/Fail/Fail";
+import Signup from "../pages/Signup/Signup";
+import Login from "../pages/Login/Login";
 
 
 const Routes = createBrowserRouter([
@@ -28,15 +34,43 @@ const Routes = createBrowserRouter([
                 element: <CategoryPage />
             },
             {
-                path: "/productDetails",
-                element: <ProductDetailsPage />
+                path: '/details/:id',
+                element: <ProductDetailsPage />,
+                loader: ({ params }) => fetch(`http://localhost:5000/api/product/${[params.id]}`)
+            },
+            {
+                path: "/purchase/:id",
+                element: <PurchasePage />,
+                loader: ({ params }) => fetch(`http://localhost:5000/api/buy/${params.id}?count=${params.count}&colors=${params.colors}`)
+            }
+            
+            ,
+            {
+                path: "payment/success/:tranId",
+                element: <Success/>
+            },
+            {
+                path: "payment/fail/:tranId",
+                element: <Fail/>
             },
             {
                 path: "/cart",
                 element: <CartPage />
             },
+          
+         
 
-        ]
+        ],
+        
+
+    },
+    {
+        path: "/signUp",
+        element: <Signup />
+    },
+    {
+        path: "/login",
+        element: <Login />
     },
     {
         path: "/dashboard",
