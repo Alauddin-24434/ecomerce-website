@@ -16,6 +16,8 @@ import PurchasePage from "../pages/Purchase/PurchasePage";
 
 import Success from "../components/Payment/Success/Success";
 import Fail from "../components/Payment/Fail/Fail";
+import Signup from "../pages/Signup/Signup";
+import Login from "../pages/Login/Login";
 
 
 const Routes = createBrowserRouter([
@@ -34,13 +36,14 @@ const Routes = createBrowserRouter([
             {
                 path: '/details/:id',
                 element: <ProductDetailsPage />,
-                loader: ({ params }) => fetch(`http://localhost:5000/product/${[params.id]}`)
+                loader: ({ params }) => fetch(`http://localhost:5000/api/product/${[params.id]}`)
             },
             {
                 path: "/purchase/:id",
                 element: <PurchasePage />,
-                loader: ({ params }) => fetch(`http://localhost:5000/buy/${params.id}?count=${params.count}`)
+                loader: ({ params }) => fetch(`http://localhost:5000/api/buy/${params.id}?count=${params.count}&colors=${params.colors}`)
             }
+            
             ,
             {
                 path: "payment/success/:tranId",
@@ -54,8 +57,20 @@ const Routes = createBrowserRouter([
                 path: "/cart",
                 element: <CartPage />
             },
+          
+         
 
-        ]
+        ],
+        
+
+    },
+    {
+        path: "/signUp",
+        element: <Signup />
+    },
+    {
+        path: "/login",
+        element: <Login />
     },
     {
         path: "/dashboard",

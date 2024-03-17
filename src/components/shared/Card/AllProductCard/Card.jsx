@@ -1,35 +1,50 @@
-import React from 'react';
-import { FaStar } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+/* eslint-disable react/prop-types */
 
+import { useNavigate } from 'react-router-dom';
 const Card = ({ product }) => {
 
+
+
+
+
     const navigate = useNavigate();
-    // Function to render star ratings
-    const renderRatingStars = () => {
+    const rating = Math.floor(Math.floor() * (5 - 1 + 1)) + 1;
+
+    // Function to generate star icons based on rating
+    const renderStars = () => {
         const stars = [];
-        for (let i = 0; i < product.rating; i++) {
-            stars.push(<FaStar key={i} className="text-yellow-500" />);
+        for (let i = 0; i < rating; i++) {
+            stars.push(<span key={i} className="text-yellow-400">&#9733;</span>);
+        }
+        for (let i = rating; i < 5; i++) {
+            stars.push(<span key={i} className="text-gray-300">&#9733;</span>);
         }
         return stars;
     };
 
-
-
+    // Calculate discounted price
+    const discountedPrice = product.price - product.discount;
     const handleProductDetails = (id) => {
         navigate(`/details/${id}`);
     };
-
     return (
-        <div onClick={() => handleProductDetails(product?._id)} className="max-w-xs  rounded h-96 bg-slate-200 overflow-hidden shadow-2xl">
-            <img className="w-full h-48" src={product.images[0]} alt={product.title} />
-            <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">{product.title}</div>
-                <p className="text-gray-700 text-base">${product.price}</p>
+        <div onClick={() => handleProductDetails(product?._id)} className="max-w-full cursor-pointer lg:w-48 h-80  rounded overflow-hidden shadow-lg bg-white hover:shadow-xl transition duration-300 flex flex-col justify-center items-center">
+            <div className="h-56 overflow-hidden">
+                <img className="w-auto h-full transition-transform duration-300 transform" src={product?.images[0]} alt={product.title} />
             </div>
-            <div className="px-6 pt-4 pb-2">
+            <hr className="border-t border-gray-200 my-2 w-full" />
+
+            <div className="px-2 py-2">
+                <div className="text-xs mb-1">{product.title}</div>
+                <p className="text-[#01A49E] text-base font-bold">
+                    <span className="mr-2">${discountedPrice.toFixed(2)}</span>
+                    {product.discount > 0 && (
+                        <span className="text-gray-400 text-xs line-through mr-2">${product.price}</span>
+                    )}
+                    <span className='text-red-400 text-xs'>{product.discount}% off</span>
+                </p>
                 <div className="flex items-center">
-                    {renderRatingStars()}
+                    <div className="text-yellow-400">{renderStars()}</div>
                 </div>
             </div>
         </div>

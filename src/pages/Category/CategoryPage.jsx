@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ProductCard from '../../components/shared/Card/ProductSingleCard/ProductCard';
 
@@ -13,7 +13,7 @@ const CategoryPage = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/item`);
+                const response = await fetch(`http://localhost:5000/api/products`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch categories');
                 }
@@ -64,8 +64,8 @@ const CategoryPage = () => {
 
     return (
         <section className='max-w-7xl mx-auto'>
-            <div className="flex">
-                <div className="w-1/5 p-4">
+            <div className="flex flex-wrap">
+                <div className="w-full lg:w-1/4 xl:w-1/5 p-4">
                     {/* Filters */}
                     <h2 className="text-lg font-bold mb-4">Brands</h2>
                     <select
@@ -114,16 +114,16 @@ const CategoryPage = () => {
                     ) : null}
                 </div>
 
-                <div className="w-3/3 p-4">
+                <div className="w-full lg:w-3/4 xl:w-4/5 p-4">
                     {/* Display filtered items */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 gap-4">
                         {filteredData?.map((item, index) => (
                             <div
                                 onClick={() => handleProductDetails(item?._id)}
                                 key={index}
                                 className="max-w-xs rounded overflow-hidden shadow-lg transition duration-300 hover:shadow-2xl cursor-pointer"
                             >
-                                <ProductCard item={item} />
+                                <ProductCard item={item}  />
                             </div>
                         ))}
                     </div>

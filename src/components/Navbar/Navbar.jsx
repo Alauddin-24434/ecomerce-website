@@ -11,7 +11,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar flex justify-between items-center bg-gray-900 text-white p-4">
+        <nav className="navbar flex justify-between items-center bg-[#01A49E] hover:bg-[#008B8B] border border-[#FFFFFF] text-white p-4">
             <div className="navbar-left">
                 <div className="categories-dropdown relative">
                     <span onClick={toggleCategories} className="categories-toggle flex items-center cursor-pointer">

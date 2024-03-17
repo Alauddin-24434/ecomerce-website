@@ -7,6 +7,7 @@ import axios from 'axios';
 const storage = getStorage(app);
 
 const AddProduct = () => {
+
     const [title, setTitle] = useState('');
     const [brand, setBrand] = useState('');
     const [category, setCategory] = useState('');
@@ -23,8 +24,15 @@ const AddProduct = () => {
         'Monitor',
         'Laptop',
         'Watch',
+        'Tablet',
+        'Camera',
+        'Speaker',
+        'Router',
+        'Smart Home Devices',
+        'Gaming Console',
         // Add more categories as needed
     ];
+    
     const brands = [
         'Apple',
         'Sony',
@@ -35,7 +43,10 @@ const AddProduct = () => {
         'Huawei',
         'Dell',
         'HP',
+        "Canon",
         'Lenovo',
+        "Tenda",
+        "TpLink",
         'Acer',
         'Asus',
         'Toshiba',
@@ -51,12 +62,15 @@ const AddProduct = () => {
     
     const availableColors = [
         'Golden',
+        'Silver',
+        "Purple",
         'White',
         'Red',
         'Blue',
         'Green',
         'Yellow',
         'Black',
+        'Orange'
         // Add more colors as needed
     ];
 
@@ -172,7 +186,7 @@ const AddProduct = () => {
                 <div className="mb-4">
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700">Product Title</label>
                     <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 p-2 w-full border rounded-md" />
-                </div>
+                </div> 
                 <div className="mb-4">
                     <label htmlFor="brand" className="block text-sm font-medium text-gray-700">Brand</label>
                     <select id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} className="mt-1 p-2 w-full border rounded-md">
