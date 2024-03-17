@@ -1,3 +1,10 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add background color to the entire website */
+body {
+  /* Set the background color to #F5F5F5 */
+  @apply bg-gray-100; /* Tailwind CSS utility class for light gray background */
+}
