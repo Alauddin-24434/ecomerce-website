@@ -44,7 +44,7 @@ const Success = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/ordered?transactionId=${tranId}`);
+                const response = await fetch(`https://ecommerce-server-beta.vercel.app/ordered?transactionId=${tranId}`);
                 if (!response.ok) {
                     throw new Error("Failed to fetch product data");
                 }

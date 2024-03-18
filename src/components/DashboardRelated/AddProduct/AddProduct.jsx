@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import app from '../../../firebase/Firebase.config';
+import app from '../../../firebase/firebase.config';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -159,7 +159,7 @@ const AddProduct = () => {
         };
     
         try {
-            const response = await axios.post('http://localhost:5000/createProduct', productData);
+            const response = await axios.post('https://ecommerce-server-beta.vercel.app/createProduct', productData);
             console.log('Response:', response.data);
             // Handle success, show message or navigate to another page
             toast.success('Product added successfully!');

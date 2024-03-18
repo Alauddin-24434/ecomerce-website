@@ -37,12 +37,12 @@ const Routes = createBrowserRouter([
             {
                 path: '/details/:id',
                 element: <Privateroutes><ProductDetailsPage /></Privateroutes> ,
-                loader: ({ params }) => fetch(`http://localhost:5000/api/product/${[params.id]}`)
+                loader: ({ params }) => fetch(`https://ecommerce-server-beta.vercel.app/product/${[params.id]}`)
             },
             {
                 path: "/purchase/:id",
                 element:<PurchasePage /> ,
-                loader: ({ params }) => fetch(`http://localhost:5000/api/buy/${params.id}?count=${params.count}&colors=${params.colors}`)
+                loader: ({ params }) => fetch(`https://ecommerce-server-beta.vercel.app/buy/${params.id}?count=${params.count}&colors=${params.colors}`)
             }
             
             ,

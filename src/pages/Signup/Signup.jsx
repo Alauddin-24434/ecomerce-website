@@ -1,131 +1,112 @@
-import  { useState } from 'react';
-import './Signup.css'; // Import CSS file for additional styling
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from "react";
+import { updateProfile } from "firebase/auth";
+import Swal from "sweetalert2";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
 
+const SignUp = () => {
+    const { createUser } = useContext(AuthContext);
+    const [signUpError, setSignUpError] = useState("");
+    const navigate = useNavigate();
+    const location = useLocation();
 
-const Signup = () => {
-  const navigate=useNavigate()
-
-    // State variables to store form data and error message
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-    });
-    const [error, setError] = useState('');
-
-    // Event handler to update form data
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleSubmit = async (e) => {
+    const handleRegister = (e) => {
         e.preventDefault();
+        const name = e.target.name.value;
+        const email = e.target.email.value;
+        const password = e.target.password.value;
 
-        if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match");
-            return;
-        }
+        setSignUpError(""); // Clear previous error messages
 
-        try {
-            const response = await axios.post('http://localhost:5000/api/register', {
-                name: formData.name,
-                email: formData.email,
-                password: formData.password
-            }); // Adjust the API endpoint accordingly
+        // Password validation function
+        const isPasswordValid = (password) => {
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+            return regex.test(password);
+        };
 
-            // Check the status code of the response
-            if (response.status === 201) {
-                // Registration successful
-                console.log(response.data);
-                setError(''); // Clear any previous error
-                // Redirect to the login page
-                navigate('/login');
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            // Handle any errors, such as displaying an error message to the user
-            if (error.response && error.response.data && error.response.data.message) {
-                // If there is an error message from the server, display it
-                setError(error.response.data.message);
-            } else if (error.response && error.response.status === 400) {
-                // Handle specific status code errors
-                setError('User already exists');
-            } else {
-                // If there is no specific error message, set a generic error
-                setError('Registration failed');
-            }
+        // Check if the password is valid
+        if (isPasswordValid(password)) {
+            // Create user
+            createUser(email, password)
+                .then((result) => {
+                    // Update user profile
+                    updateProfile(result.user, {
+                        displayName: name,
+                    });
+
+                    Swal.fire({
+                        title: "Success!",
+                        text: "User created successfully!",
+                        icon: "success",
+                    });
+
+                    setTimeout(() => {
+                        navigate(location?.state ? location.state : "/");
+                    }, 1500);
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    setSignUpError(errorMessage);
+
+                    // Display error message using SweetAlert2
+                    signUpError &&
+                        Swal.fire({
+                            title: "Error!",
+                            text: signUpError,
+                            icon: "error",
+                        });
+                });
+        } else {
+            // Display password validation error using SweetAlert2
+            Swal.fire({
+                title: "Error!",
+                text:
+                    "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+                icon: "error",
+            });
         }
     };
-
 
     return (
-        <div className="signup-container">
-            <div className="signup-content">
-                <div className="signup-image">
-                    <img src="/src/assets/images/signup.png" alt="Signup" />
+        <div className="flex    items-start h-screen">
+            <div className="flex justify-between items-center max-w-screen-2xl mx-auto mt-16  bg-gray-100 rounded-lg  shadow-md">
+                <div className="w-1/2">
+                    <img src="https://i.ibb.co/5GVzPzt/signup.png" alt="Signup" className="max-w-full h-auto" />
                 </div>
-                <div className="signup-form">
-                    <h2>Register</h2>
-                    <form className="signup-form-fields" onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="name">Your Name</label>
+                <div className="w-1/2 flex flex-col justify-center items-center">
+                    <h2 className="text-2xl mb-4">Register</h2>
+                    <form className="w-full" onSubmit={handleRegister}>
+                        <div className="mb-4">
+                            <label htmlFor="name" className="block font-bold text-gray-700">Your Name</label>
                             <input
                                 type="text"
                                 id="name"
                                 name="name"
-                                value={formData.name}
                                 placeholder="John Doe"
                                 className="input-field"
-                                onChange={handleInputChange}
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="email">Email Address</label>
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block font-bold text-gray-700">Email Address</label>
                             <input
                                 type="email"
-                                id="email"
                                 name="email"
-                                value={formData.email}
+                                id="email"
                                 placeholder="example@gmail.com"
                                 className="input-field"
-                                onChange={handleInputChange}
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
+                        <div className="mb-4">
+                            <label htmlFor="password" className="block font-bold text-gray-700">Password</label>
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
-                                value={formData.password}
                                 placeholder="*****"
                                 className="input-field"
-                                onChange={handleInputChange}
                             />
                         </div>
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                placeholder="*****"
-                                className="input-field"
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        {/* Display error message */}
-                        {error && <p className="error-message ">{error}</p>}
-                        {/* Add more form fields as needed */}
-                        <button type="submit" className="signup-button">Sign Up</button>
+                        <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md transition duration-300 hover:bg-blue-600">Sign Up</button>
                     </form>
                 </div>
             </div>
@@ -133,4 +114,4 @@ const Signup = () => {
     );
 };
 
-export default Signup;
+export default SignUp;

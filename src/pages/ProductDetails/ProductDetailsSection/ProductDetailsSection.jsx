@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Importing icons from react-icons
+import axios from 'axios';
 
 // Define a mapping between color names and their corresponding codes
 const colorCodes = {
@@ -88,7 +89,26 @@ const ProductDetailsSection = ({ images, title, price, brand, quantity, handleSu
     useEffect(() => {
         window.scrollTo(0, 0); // Scroll to the top when the component mounts
     }, []); // Empty dependency array ensures this effect runs only once on component mount
+ 
+    const totalPrice = (parseFloat(price) * parseInt(quantity)).toFixed(2);
+    const handleAddCart = async () => {
+       
 
+        try {
+            const response = await axios.post('https://ecommerce-server-beta.vercel.app/userAddCart', {
+                productId: _id,
+                title:title,
+                totalPrice: totalPrice,
+                colors:  filteredColors
+            });
+
+            console.log('Product added to cart:', response.data);
+            // Handle success, e.g., display a success message to the user
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            // Handle error, e.g., display an error message to the user
+        }
+    };
     return (
         <div className="flex flex-col lg:flex-row">
             {/* Image Box */}
@@ -148,7 +168,7 @@ const ProductDetailsSection = ({ images, title, price, brand, quantity, handleSu
                         </div>
                         <div className="flex w-full max-w-xs gap-2 border border-gray-300 py-1">
                             <button onClick={handleBuyNow} className="flex-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 px-4 py-2">Buy Now</button>
-                            <button className="flex-1 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 px-4 py-2">Add to Cart</button>
+                            <button onClick={handleAddCart} className="flex-1 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 px-4 py-2">Add to Cart</button>
                         </div>
                     </div>
                     <div className="flex items-center justify-between">

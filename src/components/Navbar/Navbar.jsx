@@ -1,21 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { AiOutlineUserAdd } from 'react-icons/ai';
-import { RiArrowDropDownLine } from 'react-icons/ri'; // Icon for dropdown arrow
-import { FaSearch } from 'react-icons/fa'; // Icon for search
-import useUser from '../../hooks/useUser';
+import { useContext, useState, } from 'react';
+import { Link, } from 'react-router-dom';
+
 import { FaUser } from 'react-icons/fa';
+import { AuthContext } from '../../Provider/AuthProvider';
+
 const Navbar = () => {
-    const [showCategories, setShowCategories] = useState(false);
+    // const [showCategories, setShowCategories] = useState(false);
     const [showProfileCard, setShowProfileCard] = useState(false);
-    const location = useLocation();
-    const [datas, setDatas] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const { data, refetch } = useUser()
-    const toggleCategories = () => {
-        setShowCategories(!showCategories);
-    };
+    // const location = useLocation();
+
+    const { userLogOut, authUser } = useContext(AuthContext)
+    // const toggleCategories = () => {
+    //     setShowCategories(!showCategories);
+    // };
 
     const toggleProfileCard = () => {
         setShowProfileCard(!showProfileCard);
@@ -23,50 +20,49 @@ const Navbar = () => {
 
     // Event handler to handle logout
     const handleLogout = () => {
-        refetch()
-        localStorage.removeItem('token');
-        localStorage.removeItem('id');
+
+        userLogOut()
     };
 
 
-    useEffect(() => {
-        // Define the URL of the API endpoint
-        const apiUrl = 'http://localhost:5000/api/search/categories?categories=Mobile';
+    // useEffect(() => {
+    //     // Define the URL of the API endpoint
+    //     const apiUrl = 'https://ecommerce-server-beta.vercel.app/search/categories?categories=Mobile';
 
-        // Fetch data from the API endpoint
-        fetch(apiUrl)
-            .then(response => {
-                // Check if the response is successful
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                // Parse the JSON response
-                return response.json();
-            })
-            .then(data => {
-                // Update the state with the fetched data
-                setDatas(data);
-                setLoading(false);
-                setError(null);
-            })
-            .catch(error => {
-                // Handle errors
-                console.error('Error fetching data:', error);
-                setError(error.message);
-                setLoading(false);
-            });
-    }, []); // Empty dependency array ensures the effect runs only once on component mount
+    //     // Fetch data from the API endpoint
+    //     fetch(apiUrl)
+    //         .then(response => {
+    //             // Check if the response is successful
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    //             // Parse the JSON response
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             // Update the state with the fetched data
+    //             setDatas(data);
+    //             setLoading(false);
+    //             setError(null);
+    //         })
+    //         .catch(error => {
+    //             // Handle errors
+    //             console.error('Error fetching data:', error);
+    //             setError(error.message);
+    //             setLoading(false);
+    //         });
+    // }, []); // Empty dependency array ensures the effect runs only once on component mount
 
     // Check if the current route is the root route "/"
-    const isRootRoute = location.pathname === '/';
-
+    // const isRootRoute = location.pathname === '/';
+    console.log(authUser)
     return (
         <nav className="navbar flex justify-between items-center bg-[#01A49E] hover:bg-[#008B8B] border border-[#FFFFFF] text-white p-4">
             {/* Navbar Logo */}
-            <p>Logo</p>
+            <Link to="/">E_Bazar</Link>
 
             {/* Conditionally render categories dropdown only if the current route is not the root route */}
-            {!isRootRoute && (
+            {/* {!isRootRoute && (
                 <div className="flex items-center">
                     <div className="categories-dropdown relative mr-4">
                         <span onClick={toggleCategories} className="categories-toggle flex items-center cursor-pointer">
@@ -89,13 +85,13 @@ const Navbar = () => {
                             </div>
                         )}
                     </div>
-                    {/* Search field */}
+                  
                     <div className="search-field flex items-center bg-white text-black border border-gray-300 rounded-md px-2">
                         <input type="text" placeholder="Search..." className="bg-transparent focus:outline-none flex-grow" />
                         <FaSearch className="text-gray-600" />
                     </div>
                 </div>
-            )}
+            )} */}
 
             {/* Navbar right */}
             <div className="flex items-center">
@@ -109,16 +105,16 @@ const Navbar = () => {
                             <ul>
 
                                 <li>
-                                    <p>{data?.name}</p>
+                                    <p>{ authUser?.displayName}</p>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <Link to="/profile">Profile</Link>
-                                </li>
+                                </li> */}
                                 <li>
-                                    {data ? <> <button onClick={handleLogout} className="logout-button">Logout</button></>
-                                    :
-                                    <><Link to="/login">Login</Link></>
-                                }
+                                    { authUser? <> <button onClick={handleLogout} className="logout-button">Logout</button></>
+                                        :
+                                        <><Link to="/login">Login</Link></>
+                                    }
 
                                 </li>
                             </ul>

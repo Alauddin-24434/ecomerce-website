@@ -1,32 +1,32 @@
 /* eslint-disable react/prop-types */
-import { useEffect, } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import useUser from '../hooks/useUser';
+import { useContext, useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../Provider/AuthProvider";
 
-const PrivateRoutes = ({ children }) => {
-    const location = useLocation();
-    const { data, isFetching } = useUser();
-    
 
-    // Save previous location when the user tries to access a private route
-    useEffect(() => {
-        if (!data) {
-           const isLocation=location.pathname
-            localStorage.setItem('prevLocation',isLocation)
-        }
-    }, [data, location]);
+const PrivateRoute = ({ children }) => {
+  const { authUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+  const location=useLocation();
+  // console.log(location.pathname)
 
-    if (isFetching) {
-        return <span className="loading loading-spinner mx-auto text-accent"></span>;
-    }
+  useEffect(() => {
+    // Simulate a 1-second delay before setting loading to false
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
 
-    if (data) {
-        // If user is authenticated, render children
-        return children;
-    } else {
-        // If user is not authenticated, redirect to login page
-        return <Navigate to="/login" replace />;
-    }
+    return () => {
+      clearTimeout(timeout); // Clear the timeout if the component unmounts
+    };
+  }, []);
+
+  if (loading) {
+    // Display a loading indicator during the delay
+    return <span className="loading loading-dots loading-lg"></span>;
+  }
+
+  return authUser? children : <Navigate state={location.pathname} to="/login" />;
 };
 
-export default PrivateRoutes;
+export default PrivateRoute;

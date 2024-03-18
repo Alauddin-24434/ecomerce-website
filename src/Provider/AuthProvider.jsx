@@ -1,85 +1,77 @@
 /* eslint-disable react/prop-types */
-import axios from "axios";
-import { createContext,  useState } from "react";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
+import { createContext, useEffect, useState } from "react";
+import app from "../firebase/firebase.config";
+
+
+
 
 export const AuthContext = createContext(null);
+const Provider = new GoogleAuthProvider()
+const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
-    // State to store user information
-  
-    // State to track loading status
-    const [loading, setLoading] = useState(false);
-    // State to store error message
-    const [error, setError] = useState('');
 
-    // Function to handle user login
-    const login = async (email, password) => {
-        try {
-            setLoading(true); // Set loading to true while waiting for the response
-            const response = await axios.post('http://localhost:5000/api/login', {
-                email: email,
-                password: password
-            });
-            // Check the status code of the response
-            if (response.status === 200) {
-                // Login successful
-                const { token, user } = response.data;
-                localStorage.setItem('token', token); // Save token in localStorage
-                localStorage.setItem('id', user._id); // Save token in localStorage
-              
-                setError(''); // Clear any previous error
-                // Redirect or perform other actions for successful login
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            // Handle any errors, such as displaying an error message to the user
-            if (error.response && error.response.data && error.response.data.message) {
-                // If there is an error message from the server, display it
-                setError(error.response.data.message);
-            } else if (error.response && error.response.status === 400) {
-                // Handle specific status code errors
-                setError('Invalid email or password');
-            } else {
-                // If there is no specific error message, set a generic error
-                setError('Login failed');
-            }
-        } finally {
-            setLoading(false); // Set loading to false after login attempt
-        }
-    };
+    const [loader, setLoading] = useState(true)
+    const [authUser, setAuthUser] = useState()
 
-    // Function to handle user signup
-    const signup = async () => {
-        try {
-            // Perform signup logic here (e.g., API call)
-            // Set loading to true while waiting for the response
+    //user create SignUp page
+    const createUser = (email, password) => {
+        setLoading(true)
+        return createUserWithEmailAndPassword(auth, email, password);
+    }
+    // user login page
 
-        } catch (error) {
-            // Handle signup errors (e.g., display error message)
-            console.error("Signup failed:", error);
-            // Set loading to false in case of error
-            setLoading(false);
-        }
-    };
+    const userLogin = (email, password) => {
+        setLoading(true)
+        return signInWithEmailAndPassword(auth, email, password);
+    }
+    // google login
+    const signInWithGoogle = () =>{
+        setLoading(true);
+        return signInWithPopup(auth, Provider);
+    }
 
-  
-
-    // Context value containing user state and login/logout functions
-    const authContextValue = {
-        
+    // onAuth state changed
+    useEffect(() => {
+        const unSubsCribe = onAuthStateChanged(auth, currentUser => {
+           
+          
+            setAuthUser(currentUser);
+          
+           
+         
+           
+        })
+       return()=>{
+        setLoading(false)
+        unSubsCribe;
        
-        loading,
-        error,
-        login,
-        signup,
-     
-    };
+       }
 
+    }, [])
+
+   // log out
+   const userLogOut = () => {
+    setLoading(true)
+    return signOut(auth)
+}
+
+    const userInfo = {
+        createUser,
+        userLogin,
+        loader,
+        authUser,
+        userLogOut,
+        signInWithGoogle
+    }
     return (
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={userInfo}>
             {children}
         </AuthContext.Provider>
     );
 };
 
 export default AuthProvider;
+
+

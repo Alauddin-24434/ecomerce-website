@@ -36,7 +36,7 @@ const PurchasePage = () => {
     console.log(colorsArray)
     const handlePayNow = () => {
         // Call your backend server to initiate the payment process
-        fetch('http://localhost:5000/api/order', {
+        fetch('https://ecommerce-server-beta.vercel.app/order', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
